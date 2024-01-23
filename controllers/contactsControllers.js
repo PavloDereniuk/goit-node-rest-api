@@ -1,11 +1,15 @@
-import contactsService from "../services/contactsServices.js";
+import { getAllContacts } from "./getAllContacts.js";
+import { getOneContact } from "./getOneContact.js";
+import { createContact } from "./createContact.js";
+import { updateContact } from "./updateContact.js";
+import { deleteContact } from "./deleteContact.js";
+// import { validateBody } from "../helpers/validateBody.js";
+import { contactsControllersWrapper } from "../helpers/contactsControllersWrapper.js";
 
-export const getAllContacts = (req, res) => {};
-
-export const getOneContact = (req, res) => {};
-
-export const deleteContact = (req, res) => {};
-
-export const createContact = (req, res) => {};
-
-export const updateContact = (req, res) => {};
+export default {
+  getAllContacts: contactsControllersWrapper(getAllContacts),
+  getOneContact: contactsControllersWrapper(getOneContact),
+  deleteContact: contactsControllersWrapper(deleteContact),
+  createContact: contactsControllersWrapper(createContact),
+  updateContact: contactsControllersWrapper(updateContact),
+};

@@ -1,9 +1,9 @@
-import { getContactById } from "../services/contactsServices.js";
 import { HttpError } from "../helpers/HttpError.js";
+import { Contact } from "../models/contact.js";
 
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await getContactById(id);
+  const result = await Contact.findById(id);
   if (!result) {
     throw HttpError(404, "Not found");
   }

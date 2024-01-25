@@ -3,7 +3,7 @@ import { getOneContact } from "./getOneContact.js";
 import { createContact } from "./createContact.js";
 import { updateContact } from "./updateContact.js";
 import { deleteContact } from "./deleteContact.js";
-// import { validateBody } from "../helpers/validateBody.js";
+import { updateFavorite } from "./updateFavorite.js";
 import { contactsControllersWrapper } from "../helpers/contactsControllersWrapper.js";
 
 export default {
@@ -12,4 +12,5 @@ export default {
   deleteContact: contactsControllersWrapper(deleteContact),
   createContact: contactsControllersWrapper(createContact),
   updateContact: contactsControllersWrapper(updateContact),
+  updateFavorite: contactsControllersWrapper(updateFavorite),
 };

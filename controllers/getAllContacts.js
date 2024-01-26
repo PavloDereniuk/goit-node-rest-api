@@ -1,6 +1,6 @@
-import { listContacts } from "../services/contactsServices.js";
+import { Contact } from "../models/contact.js";
 
 export const getAllContacts = async (req, res) => {
-  const result = await listContacts();
+  const result = await Contact.find();
   res.status(200).json(result);
 };

@@ -5,6 +5,14 @@ import { HttpError } from "../helpers/HttpError.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 dotenv.config();
+import gravatar from "gravatar";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs/promises";
+import Jimp from "jimp";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const tokenKey = process.env.SECRET_KEY;
 
@@ -15,8 +23,13 @@ const registerUser = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -66,10 +79,30 @@ const changeSubscription = async (req, res) => {
   console.log(req.body);
   const owner = req.user.id;
   const { subscription } = req.body;
-  await User.findByIdAndUpdate(owner, {subscription});
+  await User.findByIdAndUpdate(owner, { subscription });
 
   res.status(202).json({
-    message: "Subscription updated"
+    message: "Subscription updated",
+  });
+};
+
+const updateAvatar = async (req, res) => {
+  const owner = req.user.id;
+  const { path: tempUpload, originalname } = req.file;
+  const filename = `${owner}_${originalname}`;
+  const resultUpload = path.join(avatarsDir, filename);
+  await fs.rename(tempUpload, resultUpload);
+  const avatarURL = path.join("avatars", filename);
+
+  Jimp.read(resultUpload, function (err, avatar) {
+    if (err) throw err;
+    avatar.resize(250, 250).write(resultUpload);
+  });
+
+  await User.findByIdAndUpdate(owner, { avatarURL });
+
+  res.json({
+    avatarURL,
   });
 };
 
@@ -79,4 +112,5 @@ export default {
   getCurrent: contactsControllersWrapper(getCurrent),
   logoutUser: contactsControllersWrapper(logoutUser),
   changeSubscription: contactsControllersWrapper(changeSubscription),
+  updateAvatar: contactsControllersWrapper(updateAvatar),
 };

@@ -75,13 +75,11 @@ const logoutUser = async (req, res) => {
 };
 
 const changeSubscription = async (req, res) => {
-  console.log(req.user);
-  console.log(req.body);
   const owner = req.user.id;
   const { subscription } = req.body;
   await User.findByIdAndUpdate(owner, { subscription });
 
-  res.status(202).json({
+  res.status(200).json({
     message: "Subscription updated",
   });
 };

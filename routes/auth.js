@@ -1,6 +1,6 @@
 import express from "express";
 import { validateBody } from "../helpers/validateBody.js";
-import { registerSchema, loginSchema, subscriptionShema } from "../models/user.js";
+import { registerSchema, loginSchema, subscriptionShema, emailSchema } from "../models/user.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import { upload } from "../middlewares/upload.js";
 import ctrl from "../controllers/authUser.js"
@@ -8,6 +8,10 @@ import ctrl from "../controllers/authUser.js"
 const authRrouter = express.Router();
 
 authRrouter.post("/register", validateBody(registerSchema), ctrl.registerUser);
+
+authRrouter.get("/verify/:vereficationCode", ctrl.verefyEmail);
+
+authRrouter.post("/verify", validateBody(emailSchema), ctrl.resendVerifyEmail);
 
 authRrouter.post("/login", validateBody(loginSchema), ctrl.loginUser);
 
